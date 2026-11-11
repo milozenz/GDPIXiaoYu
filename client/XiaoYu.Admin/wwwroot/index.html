@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>小鱼审核后台</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+  <!-- 登录页 -->
+  <section id="login" class="login" hidden>
+    <form id="login-form" class="login-card" autocomplete="on">
+      <div class="brand brand-lg">
+        <span class="logo" aria-hidden="true"></span>
+        <div><b>广理职小鱼</b><small>审核后台</small></div>
+      </div>
+      <label class="field">
+        <span>用户名或邮箱</span>
+        <input id="login-user" name="username" autocomplete="username" maxlength="64" required>
+      </label>
+      <label class="field">
+        <span>密码</span>
+        <input id="login-pass" name="password" type="password" autocomplete="current-password" maxlength="64" required>
+      </label>
+      <p id="login-error" class="form-error" role="alert"></p>
+      <button id="login-btn" class="btn btn-primary btn-block" type="submit">登录</button>
+      <p class="hint">只有管理员账号能登录。</p>
+    </form>
+  </section>
+
+  <!-- 登录后的界面：左边导航，右边内容 -->
+  <div id="app" class="app" hidden>
+    <aside class="side">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <div><b>广理职小鱼</b><small>审核后台</small></div>
+      </div>
+      <nav id="nav" class="nav"></nav>
+      <div class="me">
+        <span id="me-name" class="me-name"></span>
+        <button id="logout" class="btn btn-ghost btn-sm" type="button">退出</button>
+      </div>
+    </aside>
+    <main id="main" class="main" tabindex="-1"></main>
+  </div>
+
+  <!-- 确认框 -->
+  <dialog id="dialog" class="dialog">
+    <form method="dialog" class="dialog-body">
+      <h3 id="dialog-title"></h3>
+      <div id="dialog-content"></div>
+      <div class="dialog-actions">
+        <button value="cancel" class="btn btn-ghost" type="submit">取消</button>
+        <button id="dialog-ok" value="ok" class="btn btn-primary" type="submit">确定</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

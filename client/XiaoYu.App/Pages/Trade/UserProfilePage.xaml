@@ -1,0 +1,57 @@
+<!-- 用户主页：顶部一张资料卡（头像、昵称、简介、三个小数据），下面是他在卖的商品 -->
+<UserControl x:Class="XiaoYu.App.Pages.Trade.UserProfilePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:XiaoYu.App.Controls"
+             xmlns:s="clr-namespace:XiaoYu.App.Services">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid MaxWidth="1180" Margin="32,26,32,40" HorizontalAlignment="Stretch" Visibility="{Binding Loaded, Converter={StaticResource BoolToVis}}">
+            <StackPanel>
+                <Border Background="White" CornerRadius="26" Padding="30,28" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" s:Motion.Appear="True">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource PrimaryButton}" Height="48" Padding="26,0" VerticalAlignment="Center"
+                                Command="{Binding ChatCommand}" Visibility="{Binding IsMe, Converter={StaticResource InvBoolToVis}}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconChat}" FontSize="16" />
+                                <TextBlock Text="私信" FontWeight="Bold" Margin="8,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <c:Avatar DockPanel.Dock="Left" Image="{Binding Profile.Avatar}" Nickname="{Binding Profile.Nickname}" Size="96" />
+                        <StackPanel Margin="26,0,20,0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Profile.Nickname}" Style="{StaticResource H1}" FontSize="26" />
+                            <TextBlock Text="{Binding Profile.Bio}" Foreground="{StaticResource SecondaryTextBrush}" FontSize="14" TextWrapping="Wrap" Margin="0,6,0,0"
+                                       Visibility="{Binding Profile.Bio, Converter={StaticResource NotEmptyToVis}}" />
+                            <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                                <Border Style="{StaticResource Badge}" Padding="12,6" Margin="0,0,10,0" ToolTip="在售">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconShop}" FontSize="14" Foreground="{StaticResource SecondaryTextBrush}" />
+                                        <TextBlock Text="{Binding Profile.OnSaleCount}" FontWeight="Bold" FontSize="15" Margin="7,0,0,0" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource Badge}" Padding="12,6" Margin="0,0,10,0" ToolTip="已卖出">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconCheck}" FontSize="14" Foreground="{StaticResource SuccessBrush}" />
+                                        <TextBlock Text="{Binding Profile.SoldCount}" FontWeight="Bold" FontSize="15" Margin="7,0,0,0" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource Badge}" Padding="12,6" ToolTip="加入时间">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconClock}" FontSize="13" Foreground="{StaticResource SecondaryTextBrush}" />
+                                        <TextBlock Text="{Binding Profile.CreatedAt, Converter={StaticResource TimeAgo}}" FontSize="13" Foreground="{StaticResource SecondaryTextBrush}" Margin="7,0,0,0" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <TextBlock Style="{StaticResource ErrorText}" Text="{Binding ErrorMessage}" Margin="8,16,0,0" />
+                <ItemsControl ItemsSource="{Binding Goods}" Margin="0,28,0,0">
+                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate><DataTemplate><c:GoodsCard /></DataTemplate></ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <c:EmptyState Glyph="{StaticResource IconShop}" Text="暂时没有在卖的闲置" Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}" />
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

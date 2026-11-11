@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+    审核后台（网页版）：管理员用浏览器打开。
+    它不碰数据库，网页上的每个操作都通过 XiaoYu.Core 的 TcpApiClient 变成一条 admin.* 命令发给服务器。
+    运行：dotnet run（默认连 127.0.0.1:9527 的服务器，网页在 http://127.0.0.1:5280）
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>XiaoYu.Admin</RootNamespace>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XiaoYu.Core\XiaoYu.Core.csproj" />
+  </ItemGroup>
+
+</Project>

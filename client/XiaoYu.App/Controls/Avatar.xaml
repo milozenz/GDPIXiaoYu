@@ -1,0 +1,10 @@
+<!-- 圆形头像。用法：<c:Avatar Image="{Binding Seller.Avatar}" Nickname="{Binding Seller.Nickname}" Size="28" /> -->
+<UserControl x:Class="XiaoYu.App.Controls.Avatar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid x:Name="Box" Width="32" Height="32">
+        <Ellipse x:Name="Circle" Fill="#FFE98A" />
+        <TextBlock x:Name="Initial" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   FontWeight="Bold" Foreground="#6B5200" />
+    </Grid>
+</UserControl>

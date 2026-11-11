@@ -1,0 +1,30 @@
+<!-- 带输入框的对话框：标题 + 说明 + 可选的一排选项（胶囊按钮）+ 多行输入框。举报、申诉用它。 -->
+<Window x:Class="XiaoYu.App.Controls.InputDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        SizeToContent="WidthAndHeight" ShowInTaskbar="False" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" FontFamily="Microsoft YaHei UI" FontSize="14">
+    <Grid Margin="28">
+        <Border x:Name="Card" Background="White" CornerRadius="22" Padding="30,26,30,24" Width="440">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="30" ShadowDepth="6" Direction="270" Opacity="0.18" />
+            </Border.Effect>
+            <StackPanel>
+                <TextBlock x:Name="TitleText" Style="{StaticResource H2}" />
+                <TextBlock x:Name="MessageText" Style="{StaticResource Body}" Foreground="{StaticResource SecondaryTextBrush}"
+                           TextWrapping="Wrap" Margin="0,8,0,0" />
+                <WrapPanel x:Name="ChoicePanel" Margin="0,16,0,0" />
+                <Border Style="{StaticResource Field}" Margin="0,14,0,0" Padding="14,10" MinHeight="96">
+                    <TextBox x:Name="InputBox" Style="{StaticResource BareInput}" AcceptsReturn="True" TextWrapping="Wrap"
+                             VerticalContentAlignment="Top" MaxHeight="160" />
+                </Border>
+                <TextBlock x:Name="ErrorLine" Style="{StaticResource ErrorText}" Margin="4,8,0,0" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+                    <Button Style="{StaticResource SecondaryButton}" Content="取消" MinWidth="100" Margin="0,0,12,0" Click="OnCancel" IsCancel="True" />
+                    <Button x:Name="OkButton" Style="{StaticResource PrimaryButton}" Content="提交" MinWidth="100" Click="OnOk" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

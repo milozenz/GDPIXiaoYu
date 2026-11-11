@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>广理职小鱼 · 校园二手交易</title>
+  <meta name="description" content="广理职小鱼：「C 与 C#」课程作品，校园二手交易平台。下载 Windows 客户端，注册后即可使用。">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 门户页：介绍 + 下载。双花括号里的占位符由 deploy/install-portal.sh 安装时按实际的 exe 填进去 -->
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="brand" href="#">
+        <span class="logo" aria-hidden="true"></span>
+        <b>广理职小鱼</b>
+      </a>
+      <nav class="top-nav">
+        <a href="#how">怎么用</a>
+        <a href="#features">功能</a>
+        <a href="#help">打不开？</a>
+        <a class="btn btn-sm" href="download/{{FILE}}" download="广理职小鱼-{{VERSION}}.exe">下载</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-in">
+        <div class="hero-text">
+          <p class="eyebrow">「C 与 C#」课程作品</p>
+          <h1>校园里的闲置，<br>同学之间直接交易</h1>
+          <p class="lead">
+            服务器用 C 语言编写，客户端用 C# WPF 编写。注册后就能发布闲置、搜索商品、私信卖家、下单购买。
+            所有金额都是模拟的，不涉及真实支付。
+          </p>
+          <div class="cta">
+            <a class="btn btn-lg" href="download/{{FILE}}" download="广理职小鱼-{{VERSION}}.exe">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 19h16"/></svg>
+              下载 Windows 版
+            </a>
+            <p class="meta">版本 {{VERSION}} · {{SIZE}} · Windows 10 / 11（64 位）· 免安装，双击运行</p>
+          </div>
+        </div>
+        <figure class="hero-shot">
+          <img src="img/home.webp" width="1542" height="1124" alt="客户端首页：商品卡片网格、分类和搜索栏">
+        </figure>
+      </div>
+    </section>
+
+    <section id="how" class="band">
+      <div class="wrap">
+        <h2>三步开始</h2>
+        <ol class="steps">
+          <li>
+            <span class="num">1</span>
+            <h3>下载并运行</h3>
+            <p>下载后双击 exe 直接运行，不用安装。第一次启动要解压运行库，稍等几秒。</p>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <h3>用邮箱注册</h3>
+            <p>在登录页点“注册新账号”，填邮箱后会收到一封验证码邮件。之后用户名或邮箱都能登录。</p>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <h3>逛、卖、聊、买</h3>
+            <p>新账号可以在“我的”里充值模拟余额，然后下单；卖家发货、买家确认收货，交易就完成了。</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="features" class="wrap section">
+      <h2>功能</h2>
+      <div class="features">
+        <div class="feature"><h3>浏览与搜索</h3><p>按分类和关键词找商品，可以按最新、价格、热度排序。</p></div>
+        <div class="feature"><h3>发布闲置</h3><p>上传图片、填写成色和价格；可以编辑、下架、重新上架。</p></div>
+        <div class="feature"><h3>私信聊天</h3><p>和卖家一对一聊天，新消息实时推送，带未读提醒。</p></div>
+        <div class="feature"><h3>模拟交易</h3><p>下单扣款、卖家发货、确认收货、取消退款，订单状态实时更新。</p></div>
+        <div class="feature"><h3>内容安全</h3><p>敏感词拦截、举报和申诉；商品和私信由 AI 辅助审核，拿不准的交给管理员。</p></div>
+        <div class="feature"><h3>账号安全</h3><p>邮箱验证码注册、找回密码、修改密码。</p></div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap">
+        <h2>界面预览 <small>（示例数据）</small></h2>
+        <div class="shots">
+          <figure><img src="img/detail.webp" width="1542" height="1124" loading="lazy" alt="商品详情页"><figcaption>商品详情</figcaption></figure>
+          <figure><img src="img/chat.webp" width="1542" height="1124" loading="lazy" alt="私信聊天页"><figcaption>私信聊天</figcaption></figure>
+          <figure><img src="img/publish.webp" width="1542" height="1124" loading="lazy" alt="发布商品页"><figcaption>发布闲置</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="help" class="wrap section">
+      <h2>打不开？</h2>
+      <div class="faq">
+        <details open>
+          <summary>提示“Windows 已保护你的电脑”</summary>
+          <p>这是 Windows 对没有购买代码签名证书的程序的统一提示。点“更多信息”，再点“仍要运行”即可。</p>
+        </details>
+        <details>
+          <summary>提示被“智能应用控制”阻止</summary>
+          <p>部分新装的 Windows 11 开启了“智能应用控制”，它会直接阻止所有没有签名的程序，没有“仍要运行”的选项。请换一台电脑运行。</p>
+        </details>
+        <details>
+          <summary>浏览器提示“不常下载”或“可能有害”</summary>
+          <p>同样是因为程序没有签名、下载的人少。在浏览器的下载列表里选择“保留”即可。</p>
+        </details>
+        <details>
+          <summary>登录时提示连不上服务器</summary>
+          <p>客户端需要联网。请检查网络后再试；如果使用了代理或校园网认证，确认已经连上互联网。</p>
+        </details>
+        <details>
+          <summary>怎么确认下载的文件没有被改过？</summary>
+          <p>在 PowerShell 里运行 <code>Get-FileHash 文件名.exe</code>，结果应为：</p>
+          <p class="hash"><code>{{SHA256}}</code></p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <p>广理职小鱼 · 「C 与 C#」课程作品 · 平台内所有金额均为模拟，不涉及真实支付</p>
+      <p class="faint">客户端版本 {{VERSION}} · 更新于 {{DATE}}</p>
+    </div>
+  </footer>
+</body>
+</html>

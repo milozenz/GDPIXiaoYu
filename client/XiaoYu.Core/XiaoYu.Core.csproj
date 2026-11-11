@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 客户端核心库：数据模型、接口、联网代码、假数据。不依赖 Windows，Linux 上也能编译测试。 -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>XiaoYu.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="FakeData\images\*" LogicalName="fake/%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>

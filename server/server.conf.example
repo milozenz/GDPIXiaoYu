@@ -1,0 +1,29 @@
+# 广理职小鱼服务器配置。复制一份改名为 server.conf，和 xiaoyu_server 放在同一个目录。
+# 不写的项用默认值。
+
+# 监听地址：0.0.0.0 = 所有网卡（别的电脑也能连，默认）；127.0.0.1 = 只允许本机连接（自己测试时用，不会触发防火墙弹窗）
+bind = 0.0.0.0
+# 监听端口
+port = 9527
+# 数据库文件
+db_path = data/xiaoyu.db
+# 图片等数据存放目录
+data_dir = data
+# 日志文件，留空表示只打印到屏幕
+log_file = data/server.log
+# 单条消息最大多少 MB
+max_frame_mb = 8
+# 多少秒收不到客户端消息就断开（客户端每 30 秒发一次心跳）
+idle_timeout = 120
+
+# ---- 注册和内容安全（不写也能跑：邮箱走开发模式，AI 审核关闭）----
+# 注册必须验证邮箱（1 = 必须，默认；0 = 可以不填邮箱）
+require_email = 1
+# 验证码邮件（不配 smtp_url = 开发模式：验证码写进日志，并在 user.send_code 的回复里带回 dev_code）
+# smtp_url = smtps://smtp.gmail.com:465
+# smtp_user = 发件邮箱
+# smtp_pass_env = XIAOYU_SMTP_PASS        （邮箱授权码放在这个环境变量里，不写进配置文件）
+# AI 审核（TypeSafe 的 Jev 决策模型）：每行一个调用源 "地址 密钥所在的环境变量"，按顺序试，失败换下一个
+# jev_model = jev-1.14
+# jev_source = https://api.typesafe.ai/v1/systemone TYPESAFE_API_KEY
+# jev_source = https://openrouter.ai/api/v1/systemone OPENROUTER_API_KEY

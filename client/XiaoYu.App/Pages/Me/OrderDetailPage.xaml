@@ -1,0 +1,176 @@
+<!-- 订单详情：进度条 → 商品 → 对方 → 时间 → 操作 -->
+<UserControl x:Class="XiaoYu.App.Pages.Me.OrderDetailPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:XiaoYu.App.Controls"
+             xmlns:s="clr-namespace:XiaoYu.App.Services">
+    <UserControl.Resources>
+        <!-- 进度圆点：Tag 绑"这一步完成了没有"，完成了变黄 -->
+        <Style x:Key="StepDot" TargetType="Border">
+            <Setter Property="Width" Value="46" />
+            <Setter Property="Height" Value="46" />
+            <Setter Property="CornerRadius" Value="23" />
+            <Setter Property="Background" Value="{StaticResource FieldBrush}" />
+            <Setter Property="TextElement.Foreground" Value="{StaticResource TertiaryTextBrush}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource Primary}" />
+                    <Setter Property="TextElement.Foreground" Value="{StaticResource TextBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="StepLine" TargetType="Border">
+            <Setter Property="Height" Value="4" />
+            <Setter Property="CornerRadius" Value="2" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Margin" Value="6,21,6,0" />
+            <Setter Property="Background" Value="{StaticResource LineBrush}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource Primary}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="StepLabel" TargetType="TextBlock" BasedOn="{StaticResource Hint}">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,8,0,0" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid MaxWidth="780" Margin="32,26,32,40" HorizontalAlignment="Stretch" Visibility="{Binding Loaded, Converter={StaticResource BoolToVis}}">
+            <StackPanel s:Motion.Appear="True">
+                <!-- 进度 -->
+                <Border Background="White" CornerRadius="26" Padding="30,26" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Order.Status, Converter={StaticResource OrderStatusText}}" FontSize="26" FontWeight="Bold"
+                                   Foreground="{Binding Order.Status, Converter={StaticResource OrderStatusBrush}}" />
+                        <!-- 已取消：一个灰色提示 -->
+                        <StackPanel Orientation="Horizontal" Margin="0,16,0,0" Visibility="{Binding IsCancelled, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconClose}" FontSize="13" Foreground="{StaticResource SecondaryTextBrush}" />
+                            <TextBlock Text="货款已退回买家，商品已重新上架" Style="{StaticResource Hint}" FontSize="13" Margin="8,0,0,0" />
+                        </StackPanel>
+                        <!-- 三段式进度 -->
+                        <Grid Margin="6,22,6,0" Visibility="{Binding IsCancelled, Converter={StaticResource InvBoolToVis}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <Border Style="{StaticResource StepDot}" Tag="{Binding Step1Done}"><TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconCheck}" FontSize="17" /></Border>
+                                <TextBlock Style="{StaticResource StepLabel}" Text="已付款" />
+                            </StackPanel>
+                            <Border Grid.Column="1" Style="{StaticResource StepLine}" Tag="{Binding Step2Done}" />
+                            <StackPanel Grid.Column="2">
+                                <Border Style="{StaticResource StepDot}" Tag="{Binding Step2Done}"><TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconPackage}" FontSize="17" /></Border>
+                                <TextBlock Style="{StaticResource StepLabel}" Text="已发货" />
+                            </StackPanel>
+                            <Border Grid.Column="3" Style="{StaticResource StepLine}" Tag="{Binding Step3Done}" />
+                            <StackPanel Grid.Column="4">
+                                <Border Style="{StaticResource StepDot}" Tag="{Binding Step3Done}"><TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconShop}" FontSize="17" /></Border>
+                                <TextBlock Style="{StaticResource StepLabel}" Text="已完成" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 商品 -->
+                <Button Style="{StaticResource RowButton}" Margin="0,14,0,0" Command="{Binding OpenGoodsCommand}">
+                    <Border Background="White" CornerRadius="22" Padding="16" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Right" Style="{StaticResource Icon}" Text="{StaticResource IconChevronRight}" FontSize="13" Foreground="{StaticResource TertiaryTextBrush}" Margin="12,0,2,0" />
+                            <Grid DockPanel.Dock="Left" Width="76" Height="76" Background="#F0F0EC" Margin="0,0,16,0">
+                                <Grid.Clip><RectangleGeometry Rect="0,0,76,76" RadiusX="16" RadiusY="16" /></Grid.Clip>
+                                <Image s:RemoteImage.Source="{Binding Order.GoodsCover}" Stretch="UniformToFill" />
+                            </Grid>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Order.GoodsTitle}" FontSize="15.5" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Margin="0,8,0,0" Foreground="{StaticResource PriceBrush}" FontWeight="Bold">
+                                    <Run Text="¥" FontSize="12" /><Run Text="{Binding Order.Price, Mode=OneWay, Converter={StaticResource Yuan}}" FontSize="20" />
+                                </TextBlock>
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+                </Button>
+
+                <!-- 对方 -->
+                <Border Background="White" CornerRadius="22" Padding="16,12" Margin="0,12,0,0" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource IconButtonYellow}" Command="{Binding ChatOtherCommand}" ToolTip="私信">
+                            <TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconChat}" FontSize="16" Foreground="{StaticResource TextBrush}" />
+                        </Button>
+                        <Button Style="{StaticResource RowButton}" Command="{Binding OpenOtherCommand}" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Horizontal" Margin="4">
+                                <c:Avatar Image="{Binding Other.Avatar}" Nickname="{Binding Other.Nickname}" Size="42" />
+                                <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Other.Nickname}" FontWeight="SemiBold" FontSize="15" />
+                                    <TextBlock Margin="0,2,0,0">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource Hint}">
+                                                <Setter Property="Text" Value="卖家" />
+                                                <Style.Triggers><DataTrigger Binding="{Binding IsSeller}" Value="True"><Setter Property="Text" Value="买家" /></DataTrigger></Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+                    </DockPanel>
+                </Border>
+
+                <!-- 时间线 -->
+                <Border Background="White" CornerRadius="22" Padding="22,18" Margin="0,12,0,0" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconTag}" FontSize="13" Foreground="{StaticResource TertiaryTextBrush}" />
+                            <TextBlock Text="{Binding Order.OrderNo}" Style="{StaticResource Hint}" FontSize="13" Margin="10,0,0,0" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconShoppingCart}" FontSize="13" Foreground="{StaticResource TertiaryTextBrush}" />
+                            <TextBlock Text="{Binding Order.CreatedAt, Converter={StaticResource DateTime}}" Style="{StaticResource Hint}" FontSize="13" Margin="10,0,0,0" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0" Visibility="{Binding Order.ShippedAt, Converter={StaticResource NotEmptyToVis}}">
+                            <TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconPackage}" FontSize="13" Foreground="{StaticResource TertiaryTextBrush}" />
+                            <TextBlock Text="{Binding Order.ShippedAt, Converter={StaticResource DateTime}}" Style="{StaticResource Hint}" FontSize="13" Margin="10,0,0,0" />
+                            <TextBlock Text="{Binding Order.ShipNote}" Style="{StaticResource Hint}" FontSize="13" Foreground="{StaticResource TextBrush}" Margin="14,0,0,0"
+                                       Visibility="{Binding Order.ShipNote, Converter={StaticResource NotEmptyToVis}}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0" Visibility="{Binding Order.CompletedAt, Converter={StaticResource NotEmptyToVis}}">
+                            <TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconCheck}" FontSize="13" Foreground="{StaticResource SuccessBrush}" />
+                            <TextBlock Text="{Binding Order.CompletedAt, Converter={StaticResource DateTime}}" Style="{StaticResource Hint}" FontSize="13" Margin="10,0,0,0" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Style="{StaticResource ErrorText}" Text="{Binding ErrorMessage}" Margin="6,14,0,0" />
+
+                <!-- 操作 -->
+                <StackPanel Margin="0,18,0,0">
+                    <Border Style="{StaticResource Field}" Margin="0,0,0,12" Visibility="{Binding CanShip, Converter={StaticResource BoolToVis}}">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Left" Style="{StaticResource Icon}" Text="{StaticResource IconPackage}" FontSize="16" Foreground="{StaticResource SecondaryTextBrush}" Margin="0,0,12,0" />
+                            <TextBox Style="{StaticResource BareInput}" Tag="发货备注（选填，比如快递单号或当面交易地点）" MaxLength="100" Text="{Binding ShipNote, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                    </Border>
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource DangerButton}" Height="52" Padding="28,0" Margin="12,0,0,0" Content="取消订单" Command="{Binding CancelCommand}"
+                                Visibility="{Binding CanCancel, Converter={StaticResource BoolToVis}}" />
+                        <Button Style="{StaticResource PrimaryButton}" Height="52" Content="发货" FontSize="16" Command="{Binding ShipCommand}" Visibility="{Binding CanShip, Converter={StaticResource BoolToVis}}" />
+                        <Button Style="{StaticResource PrimaryButton}" Height="52" Content="确认收货" FontSize="16" Command="{Binding ConfirmCommand}" Visibility="{Binding CanConfirm, Converter={StaticResource BoolToVis}}" />
+                        <Border Background="{StaticResource FieldBrush}" CornerRadius="26" Height="52" Visibility="{Binding WaitingSeller, Converter={StaticResource BoolToVis}}">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconClock}" FontSize="14" Foreground="{StaticResource SecondaryTextBrush}" />
+                                <TextBlock Text="等待卖家发货" Foreground="{StaticResource SecondaryTextBrush}" Margin="8,0,0,0" />
+                            </StackPanel>
+                        </Border>
+                        <Border Background="{StaticResource FieldBrush}" CornerRadius="26" Height="52" Visibility="{Binding WaitingBuyer, Converter={StaticResource BoolToVis}}">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconClock}" FontSize="14" Foreground="{StaticResource SecondaryTextBrush}" />
+                                <TextBlock Text="等待买家确认收货" Foreground="{StaticResource SecondaryTextBrush}" Margin="8,0,0,0" />
+                            </StackPanel>
+                        </Border>
+                    </DockPanel>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

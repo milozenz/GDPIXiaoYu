@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- 广理职小鱼 标志：折纸鱼（6 块三角形，黄到橙）。app.ico、网页图标都从这个文件生成：assets/make-icons.sh -->
+  <g stroke-width="0.6" stroke-linejoin="round">
+    <polygon points="7,33 29,12.5 29,33" fill="#FFE85C" stroke="#FFE85C"/>
+    <polygon points="7,33 29,33 29,50.5" fill="#FFD21F" stroke="#FFD21F"/>
+    <polygon points="29,12.5 44.5,32 29,33" fill="#FFC21A" stroke="#FFC21A"/>
+    <polygon points="29,33 44.5,32 29,50.5" fill="#FFA800" stroke="#FFA800"/>
+    <polygon points="44.5,32 58,17 52.5,32" fill="#FF8A1F" stroke="#FF8A1F"/>
+    <polygon points="44.5,32 52.5,32 58,47" fill="#FF6A14" stroke="#FF6A14"/>
+  </g>
+  <circle cx="16.8" cy="30" r="2.5" fill="#1F1F1F"/>
+</svg>

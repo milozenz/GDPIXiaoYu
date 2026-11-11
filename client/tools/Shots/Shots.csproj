@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 界面截图工具：把窗口放在屏幕外渲染成 PNG，不会在桌面弹窗口。开发时用来逐页检查界面。 -->
+  <PropertyGroup>
+    <!-- Windows 智能应用控制会随机拦截没签名的新编译文件；不固定哈希，被拦时重新编译就能换一个新文件再试 -->
+    <Deterministic>false</Deterministic>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\XiaoYu.App\XiaoYu.App.csproj" />
+  </ItemGroup>
+
+</Project>

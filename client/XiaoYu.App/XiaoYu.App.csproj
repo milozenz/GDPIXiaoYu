@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 客户端界面（WPF）。只能在 Windows 上运行；Linux 上可以编译检查。 -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>XiaoYu.App</RootNamespace>
+    <AssemblyName>XiaoYu</AssemblyName>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <Product>广理职小鱼</Product>
+    <AssemblyTitle>广理职小鱼 校园二手交易</AssemblyTitle>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <!--
+    线上版（给老师下载的单个 exe）：
+      dotnet publish XiaoYu.App -c Release -r win-x64 -p:Online=true
+    = 自带 .NET 运行时、打包成一个 exe、默认连线上服务器（见 Services/AppServices.cs 的 ONLINE）
+  -->
+  <PropertyGroup Condition="'$(Online)' == 'true'">
+    <DefineConstants>$(DefineConstants);ONLINE</DefineConstants>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType>none</DebugType>
+    <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <ProjectReference Include="..\XiaoYu.Core\XiaoYu.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="app.ico" />
+  </ItemGroup>
+
+  <!-- 开发用的配置文件（默认假数据）。线上版不带它，用代码里的线上默认值 -->
+  <ItemGroup Condition="'$(Online)' != 'true'">
+    <None Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

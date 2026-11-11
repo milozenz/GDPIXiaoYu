@@ -1,0 +1,127 @@
+<!-- 聊天：顶部是对方和相关商品，中间是气泡，底部是输入条。我的消息黄色靠右，对方白色靠左。 -->
+<UserControl x:Class="XiaoYu.App.Pages.Chat.ChatPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:XiaoYu.App.Controls"
+             xmlns:s="clr-namespace:XiaoYu.App.Services">
+    <Border Background="White" CornerRadius="26" MaxWidth="860" Margin="32,22,32,28" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" ClipToBounds="True">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- 顶部：对方 + 相关商品 -->
+            <Border Grid.Row="0" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1" Padding="22,14">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Style="{StaticResource RowButton}" Command="{Binding OpenGoodsCommand}" Visibility="{Binding Goods, Converter={StaticResource NotEmptyToVis}}">
+                        <Border Background="{StaticResource FieldBrush}" CornerRadius="14" Padding="8,8,16,8">
+                            <StackPanel Orientation="Horizontal">
+                                <Grid Width="40" Height="40" Background="#E8E8E4">
+                                    <Grid.Clip><RectangleGeometry Rect="0,0,40,40" RadiusX="10" RadiusY="10" /></Grid.Clip>
+                                    <Image s:RemoteImage.Source="{Binding Goods.Cover}" Stretch="UniformToFill" />
+                                </Grid>
+                                <StackPanel Margin="10,0,0,0" VerticalAlignment="Center" MaxWidth="170">
+                                    <TextBlock Text="{Binding Goods.Title}" FontSize="12.5" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Foreground="{StaticResource PriceBrush}" FontWeight="Bold" Margin="0,2,0,0">
+                                        <Run Text="¥" FontSize="11" /><Run Text="{Binding Goods.Price, Mode=OneWay, Converter={StaticResource Yuan}}" FontSize="14" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+                    <Button Style="{StaticResource RowButton}" Command="{Binding OpenPeerCommand}" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal" Margin="4">
+                            <c:Avatar Image="{Binding Peer.Avatar}" Nickname="{Binding Peer.Nickname}" Size="44" />
+                            <TextBlock Text="{Binding Peer.Nickname}" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" Margin="12,0,0,0" />
+                        </StackPanel>
+                    </Button>
+                </DockPanel>
+            </Border>
+
+            <!-- 消息 -->
+            <ScrollViewer Grid.Row="1" x:Name="Scroller" VerticalScrollBarVisibility="Auto" Background="#FCFCFA">
+                <StackPanel Margin="26,16,26,10">
+                    <Button Style="{StaticResource LinkButton}" Content="查看更早的消息" HorizontalAlignment="Center" Margin="0,0,0,8"
+                            Command="{Binding LoadOlderCommand}" Visibility="{Binding HasOlder, Converter={StaticResource BoolToVis}}" />
+                    <ItemsControl ItemsSource="{Binding Items}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel x:Name="Row" s:Motion.Appear="True" Background="Transparent">
+                                    <TextBlock Text="{Binding TimeText}" Style="{StaticResource Hint}" Foreground="{StaticResource TertiaryTextBrush}" HorizontalAlignment="Center" Margin="0,12,0,8"
+                                               Visibility="{Binding ShowTime, Converter={StaticResource BoolToVis}}" />
+                                    <StackPanel x:Name="BubbleRow" Orientation="Horizontal" HorizontalAlignment="Left">
+                                        <Border x:Name="Bubble" MaxWidth="480" Padding="16,10" Margin="0,3" Background="White"
+                                                BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="18,18,18,5">
+                                            <TextBlock x:Name="BubbleText" Text="{Binding Content}" FontSize="14.5" TextWrapping="Wrap" LineHeight="22" />
+                                        </Border>
+                                        <!-- 鼠标移到对方的消息上才出现"举报" -->
+                                        <Button x:Name="ReportLink" Style="{StaticResource LinkButton}" Content="举报" FontSize="12" Margin="10,0,0,0" VerticalAlignment="Center"
+                                                Foreground="{StaticResource TertiaryTextBrush}" Opacity="0"
+                                                Command="{Binding DataContext.ReportCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"
+                                                Visibility="{Binding CanReport, Converter={StaticResource BoolToVis}}" />
+                                    </StackPanel>
+                                    <!-- 命中二级词：接收方看到的提醒条 -->
+                                    <Border Background="#FFF7E0" BorderBrush="#F5D77A" BorderThickness="1" CornerRadius="12" Padding="12,7" Margin="0,4,0,2"
+                                            HorizontalAlignment="Left" MaxWidth="480" Visibility="{Binding ShowWarn, Converter={StaticResource BoolToVis}}">
+                                        <DockPanel>
+                                            <Button DockPanel.Dock="Right" Style="{StaticResource LinkButton}" Content="举报" FontSize="12.5" FontWeight="Bold" Margin="10,0,0,0" Foreground="#8A6100"
+                                                    Command="{Binding DataContext.ReportCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"
+                                                    Visibility="{Binding CanReport, Converter={StaticResource BoolToVis}}" />
+                                            <TextBlock FontSize="12.5" Foreground="#8A6100" TextWrapping="Wrap" VerticalAlignment="Center">
+                                                <Run Text="⚠ " /><Run Text="{Binding WarnText, Mode=OneWay}" />
+                                            </TextBlock>
+                                        </DockPanel>
+                                    </Border>
+                                </StackPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsMine}" Value="True">
+                                        <Setter TargetName="BubbleRow" Property="HorizontalAlignment" Value="Right" />
+                                        <Setter TargetName="Bubble" Property="Background" Value="{StaticResource Primary}" />
+                                        <Setter TargetName="Bubble" Property="BorderBrush" Value="{StaticResource Primary}" />
+                                        <Setter TargetName="Bubble" Property="CornerRadius" Value="18,18,5,18" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsMasked}" Value="True">
+                                        <Setter TargetName="Bubble" Property="Background" Value="#F2F2EF" />
+                                        <Setter TargetName="Bubble" Property="BorderBrush" Value="#E6E6E2" />
+                                        <Setter TargetName="BubbleText" Property="Foreground" Value="{StaticResource TertiaryTextBrush}" />
+                                        <Setter TargetName="BubbleText" Property="FontStyle" Value="Italic" />
+                                        <Setter TargetName="BubbleText" Property="FontSize" Value="13" />
+                                    </DataTrigger>
+                                    <Trigger SourceName="Row" Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="ReportLink" Property="Opacity" Value="1" />
+                                    </Trigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 输入条 -->
+            <Border Grid.Row="2" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0" Padding="18,14">
+                <StackPanel>
+                    <!-- 被禁言时：提示 + 申诉入口，输入框变灰 -->
+                    <Border Background="{StaticResource DangerSoftBrush}" CornerRadius="14" Padding="14,9" Margin="0,0,0,10"
+                            Visibility="{Binding IsMuted, Converter={StaticResource BoolToVis}}">
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Style="{StaticResource LinkButton}" Content="申诉" FontWeight="Bold" Foreground="{StaticResource DangerBrush}" Command="{Binding AppealMuteCommand}" />
+                            <TextBlock Text="{Binding MuteText}" Foreground="{StaticResource DangerBrush}" FontSize="13" VerticalAlignment="Center" TextWrapping="Wrap" />
+                        </DockPanel>
+                    </Border>
+                    <TextBlock Style="{StaticResource ErrorText}" Text="{Binding ErrorMessage}" Margin="6,0,0,8" />
+                    <DockPanel IsEnabled="{Binding IsMuted, Converter={StaticResource InvBool}}">
+                        <Button DockPanel.Dock="Right" Style="{StaticResource IconButtonYellow}" Width="46" Height="46" Margin="12,0,0,0" Command="{Binding SendCommand}" ToolTip="发送">
+                            <TextBlock Style="{StaticResource Icon}" Text="{StaticResource IconSend}" FontSize="17" Foreground="{StaticResource TextBrush}" />
+                        </Button>
+                        <Border Style="{StaticResource Field}" CornerRadius="23" MinHeight="46" Padding="20,0">
+                            <TextBox x:Name="InputBox" Style="{StaticResource BareInput}" Tag="说点什么…" MaxHeight="96" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Center"
+                                     Text="{Binding Draft, UpdateSourceTrigger=PropertyChanged}" PreviewKeyDown="OnInputKeyDown" />
+                        </Border>
+                    </DockPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

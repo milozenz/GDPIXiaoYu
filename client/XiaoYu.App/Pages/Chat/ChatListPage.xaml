@@ -1,0 +1,54 @@
+<!-- 消息列表：头像、昵称、最后一句、时间、未读红点。点一行进入聊天。 -->
+<UserControl x:Class="XiaoYu.App.Pages.Chat.ChatListPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:XiaoYu.App.Controls"
+             xmlns:s="clr-namespace:XiaoYu.App.Services">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid MaxWidth="780" Margin="32,26,32,40" HorizontalAlignment="Stretch">
+            <StackPanel>
+                <TextBlock Style="{StaticResource ErrorText}" Text="{Binding ErrorMessage}" Margin="4,0,0,10" />
+                <ItemsControl ItemsSource="{Binding Items}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource RowButton}" Margin="0,0,0,10" s:Motion.Appear="True"
+                                    Command="{Binding DataContext.OpenCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}">
+                                <Border Background="White" CornerRadius="20" Padding="18,16" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                                    <DockPanel>
+                                        <Grid DockPanel.Dock="Left" Margin="0,0,16,0">
+                                            <c:Avatar Image="{Binding Peer.Avatar}" Nickname="{Binding Peer.Nickname}" Size="54" />
+                                            <Border Background="{StaticResource DangerBrush}" CornerRadius="9" MinWidth="18" Height="18" Padding="5,0" BorderBrush="White" BorderThickness="2"
+                                                    HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-5,-7,0"
+                                                    Visibility="{Binding Unread, Converter={StaticResource NotEmptyToVis}}">
+                                                <TextBlock Text="{Binding Unread}" Foreground="White" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                        </Grid>
+                                        <TextBlock DockPanel.Dock="Right" Text="{Binding LastMessage.CreatedAt, Converter={StaticResource TimeAgo}}" Style="{StaticResource Hint}"
+                                                   Foreground="{StaticResource TertiaryTextBrush}" VerticalAlignment="Top" Margin="12,4,0,0" />
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Peer.Nickname}" FontWeight="SemiBold" FontSize="16" />
+                                            <TextBlock Text="{Binding LastMessage.Content}" FontSize="13.5" TextTrimming="CharacterEllipsis" Margin="0,5,0,0">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Unread, Converter={StaticResource NotEmptyToVis}}" Value="Visible">
+                                                                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                                                <Setter Property="FontWeight" Value="SemiBold" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <c:EmptyState Glyph="{StaticResource IconChat}" Text="还没有消息，去商品页找人聊聊吧" Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}" />
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>
