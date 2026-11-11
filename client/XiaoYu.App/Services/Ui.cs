@@ -38,12 +38,8 @@ public static class Ui
         string[]? choices = null, int maxChars = 200, string okText = "提交")
     {
         if (PromptHook != null) return PromptHook(title);
-        var owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive)
-                    ?? Application.Current?.MainWindow;
         var dialog = new InputDialog(title, message, placeholder, choices, maxChars, okText);
-        if (owner != null && owner.IsVisible) dialog.Owner = owner;
-        else dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-        return dialog.ShowDialog() == true ? (dialog.ChoiceIndex, dialog.Text) : null;
+        return ShowModal(dialog) == true ? (dialog.ChoiceIndex, dialog.Text) : null;
     }
 
     /// <summary>测试用：设置后输入框不再弹出，直接返回它给的结果（参数是标题）。</summary>
@@ -55,11 +51,23 @@ public static class Ui
     private static bool Show(string message, string title, DialogKind kind)
     {
         if (DialogHook != null) return DialogHook(kind, message);
-        var owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive)
-                    ?? Application.Current?.MainWindow;
-        var dialog = new ConfirmDialog(message, title, kind);
-        if (owner != null && owner.IsVisible) dialog.Owner = owner;
+        return ShowModal(new ConfirmDialog(message, title, kind)) == true;
+    }
+
+    /// <summary>
+    /// 弹出一个窗口，挡住它下面的窗口，关掉才能继续。
+    /// 父窗口取当前激活的窗口，没有就取主窗口；不能是它自己，也不能是看不见的窗口，
+    /// 找不到合适的就放在屏幕中间。
+    /// 注意：主窗口为空时，WPF 会把新建的窗口自动当成主窗口，
+    /// 所以"主窗口"可能正是这个弹窗本身，直接设 Owner 会报"无法将 Owner 属性设置为它本身"。
+    /// </summary>
+    public static bool? ShowModal(Window dialog)
+    {
+        var app = Application.Current;
+        var owner = app?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive && w != dialog)
+                    ?? app?.MainWindow;
+        if (owner != null && owner != dialog && owner.IsVisible) dialog.Owner = owner;
         else dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-        return dialog.ShowDialog() == true;
+        return dialog.ShowDialog();
     }
 }

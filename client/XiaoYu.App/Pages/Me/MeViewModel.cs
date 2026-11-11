@@ -70,8 +70,7 @@ public partial class MeViewModel : ViewModelBase
     [RelayCommand]
     private void ChangePassword()
     {
-        var window = new ChangePasswordWindow { Owner = System.Windows.Application.Current.MainWindow };
-        if (window.ShowDialog() == true) Ui.Toast("密码已修改，其他设备上的登录已失效");
+        if (Ui.ShowModal(new ChangePasswordWindow()) == true) Ui.Toast("密码已修改，其他设备上的登录已失效");
     }
 
     // ---------------- 资料

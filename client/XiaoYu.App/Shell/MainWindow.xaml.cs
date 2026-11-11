@@ -15,7 +15,9 @@ public partial class MainWindow : Window
         DataContext = _vm;
         _vm.LoggedOut += () =>
         {
-            new LoginWindow().Show();
+            var login = new LoginWindow();
+            Application.Current.MainWindow = login;   // 原因见 LoginWindow.OnLoggedIn
+            login.Show();
             Close();
         };
         _vm.PropertyChanged += OnVmPropertyChanged;

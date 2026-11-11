@@ -15,9 +15,13 @@ public partial class LoginWindow : Window
         Loaded += (_, _) => UsernameBox.Focus();
     }
 
+    // 先把新窗口登记成主窗口再关自己：不然登录窗口一关，主窗口就空了，
+    // 之后新建的第一个弹窗会被 WPF 当成主窗口（修改密码就因此报过错）
     private void OnLoggedIn()
     {
-        new MainWindow().Show();
+        var main = new MainWindow();
+        Application.Current.MainWindow = main;
+        main.Show();
         Close();
     }
 
