@@ -1,13 +1,14 @@
 <!--
   商品卡片，DataContext 是一个 GoodsBrief。点一下打开商品详情。悬停时轻轻上浮、出现阴影。
-  用法：<ItemsControl ItemsSource="{Binding Goods}"> 里放 WrapPanel，ItemTemplate 里放 <c:GoodsCard />
+  用法：<ItemsControl ItemsSource="{Binding Goods}"> 里放 CardGrid（按宽度自动排列数），ItemTemplate 里放 <c:GoodsCard />
+  卡片宽度由 CardGrid 决定，封面始终接近正方形
 -->
 <UserControl x:Class="XiaoYu.App.Controls.GoodsCard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:c="clr-namespace:XiaoYu.App.Controls"
              xmlns:s="clr-namespace:XiaoYu.App.Services"
-             Width="216" Margin="0,0,16,18" Cursor="Hand" s:Motion.Appear="True">
+             Cursor="Hand" SizeChanged="OnSizeChanged" s:Motion.Appear="True">
     <Border x:Name="CardBorder" Background="White" CornerRadius="18" BorderBrush="{StaticResource LineBrush}" BorderThickness="1"
             RenderTransformOrigin="0.5,0.5" MouseLeftButtonUp="OnClick">
         <Border.RenderTransform><TranslateTransform x:Name="Lift" /></Border.RenderTransform>
@@ -27,8 +28,8 @@
             </EventTrigger>
         </Border.Triggers>
         <StackPanel>
-            <Grid Height="212" Background="#F0F0EC">
-                <Grid.Clip><RectangleGeometry Rect="0,0,214,260" RadiusX="17" RadiusY="17" /></Grid.Clip>
+            <Grid x:Name="Cover" Height="212" Background="#F0F0EC">
+                <Grid.Clip><RectangleGeometry x:Name="CoverClip" Rect="0,0,214,260" RadiusX="17" RadiusY="17" /></Grid.Clip>
                 <Image s:RemoteImage.Source="{Binding Cover}" Stretch="UniformToFill" />
                 <!-- 不是"在售"时，左上角显示状态 -->
                 <Border Background="#B3000000" CornerRadius="10" Padding="9,3" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top">

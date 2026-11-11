@@ -160,7 +160,7 @@ public partial class GoodsDetailViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task OnShelfAsync()
+    private async Task ReShelfAsync()   // 不能叫 OnShelfAsync：工具包会去掉开头的 On，生成的命令就成了 ShelfCommand
     {
         if (await RunAsync(() => Api.OnShelfAsync(_goodsId))) { Ui.Toast("已重新上架"); await OnNavigatedToAsync(); }
     }

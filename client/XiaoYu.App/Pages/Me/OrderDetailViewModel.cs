@@ -76,6 +76,8 @@ public partial class OrderDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task ShipAsync()
     {
+        // 发货后双方都不能再取消订单，点错了没法撤回，所以先确认一下
+        if (!Ui.Confirm("发货后订单就不能取消了。确定已经把东西交给买家或寄出了吗？", "发货")) return;
         if (await RunAsync(async () => Apply(await Api.ShipOrderAsync(_orderId, ShipNote.Trim())))) Ui.Toast("已发货");
     }
 

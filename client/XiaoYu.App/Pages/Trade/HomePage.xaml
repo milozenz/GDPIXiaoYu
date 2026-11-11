@@ -53,10 +53,10 @@
 
                 <!-- 骨架屏（第一次加载时） -->
                 <ItemsControl ItemsSource="{Binding SkeletonSlots}" Visibility="{Binding ShowSkeleton, Converter={StaticResource BoolToVis}}">
-                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><c:CardGrid /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Width="216" Margin="0,0,16,18" Background="White" CornerRadius="18" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" Padding="0,0,0,14">
+                            <Border Background="White" CornerRadius="18" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" Padding="0,0,0,14">
                                 <StackPanel>
                                     <Border Style="{StaticResource Skeleton}" Height="212" CornerRadius="17,17,0,0" />
                                     <Border Style="{StaticResource Skeleton}" Height="14" Margin="14,14,50,0" />
@@ -69,7 +69,7 @@
 
                 <!-- 商品网格 -->
                 <ItemsControl ItemsSource="{Binding Goods}">
-                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><c:CardGrid /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate><c:GoodsCard /></DataTemplate>
                     </ItemsControl.ItemTemplate>

@@ -68,6 +68,10 @@ public static class Ui
                     ?? app?.MainWindow;
         if (owner != null && owner != dialog && owner.IsVisible) dialog.Owner = owner;
         else dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        if (ModalHook != null) return ModalHook(dialog);   // 测试时不真的弹出（设父窗口那一步照样走，能测出父窗口的问题）
         return dialog.ShowDialog();
     }
+
+    /// <summary>测试用：设置后 ShowModal 不再弹出窗口，直接由它决定返回值。正常运行时为 null。</summary>
+    public static Func<Window, bool?>? ModalHook { get; set; }
 }

@@ -47,7 +47,7 @@
 
                 <TextBlock Style="{StaticResource ErrorText}" Text="{Binding ErrorMessage}" Margin="8,16,0,0" />
                 <ItemsControl ItemsSource="{Binding Goods}" Margin="0,28,0,0">
-                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><c:CardGrid /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate><DataTemplate><c:GoodsCard /></DataTemplate></ItemsControl.ItemTemplate>
                 </ItemsControl>
                 <c:EmptyState Glyph="{StaticResource IconShop}" Text="暂时没有在卖的闲置" Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}" />

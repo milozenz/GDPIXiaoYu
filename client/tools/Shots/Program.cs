@@ -24,6 +24,7 @@ internal static partial class Program
     private static string _out = "shots";
     private static bool _real;
     private static MainWindow? _main;
+    private static double _mainW = 1200, _mainH = 800;   // 主窗口大小，--size 1600x900 可以改，用来检查不同窗口宽度下的布局
 
     [STAThread]
     private static int Main(string[] args)
@@ -34,6 +35,7 @@ internal static partial class Program
         {
             if (args[i] == "--out") _out = args[++i];
             else if (args[i] == "--real") real = args[++i];
+            else if (args[i] == "--size") { var wh = args[++i].Split('x'); _mainW = double.Parse(wh[0]); _mainH = double.Parse(wh[1]); }
             else wanted.Add(args[i]);
         }
         Directory.CreateDirectory(_out);
@@ -86,8 +88,25 @@ internal static partial class Program
     {
         var s = new Dictionary<string, Func<Task>>();
         if (_real) AddFlows(s);                       // 流程测试只在连真服务器时有意义
+        AddCrawl(s);                                  // 点点点测试（只用假数据）
         s["icons"] = () => { ShotIcons(); return Task.CompletedTask; };
         s["login"] = () => { var w = Offscreen(new LoginWindow()); Settle(w, 600); Capture(w, "login"); w.Close(); return Task.CompletedTask; };
+        // 密码小眼睛：先填好密码截一张（圆点），再按下眼睛截一张（明文）
+        s["password-eye"] = () =>
+        {
+            var w = Offscreen(new LoginWindow()); Settle(w, 400);
+            var box = (System.Windows.Controls.PasswordBox)w.FindName("PasswordBox");
+            box.Password = "Xiaoyu2026"; Settle(w, 300); Capture(w, "password-eye-hidden");
+            var eye = (System.Windows.Controls.Primitives.ToggleButton)box.Template.FindName("PART_Eye", box);
+            eye.IsChecked = true; Settle(w, 300); Capture(w, "password-eye-shown");
+            Console.WriteLine($"  字体：窗口 {w.FontFamily}，密码框 {box.FontFamily}，明文框 {((Control)box.Template.FindName("PART_Plain", box)).FontFamily}");
+            var plain = (System.Windows.Controls.TextBox)box.Template.FindName("PART_Plain", box);
+            plain.Text = "Xiaoyu2027"; Settle(w, 100);
+            Console.WriteLine(box.Password == "Xiaoyu2027" ? "  明文框改动已同步回密码框" : "  ！明文框改动没有同步：" + box.Password);
+            eye.IsChecked = false; Settle(w, 100);
+            Console.WriteLine(box.Password == "Xiaoyu2027" && plain.Text == "" ? "  隐藏后密码保留、明文已清空" : "  ！隐藏后状态不对");
+            w.Close(); return Task.CompletedTask;
+        };
         s["register"] = () => { var w = Offscreen(new RegisterWindow()); Settle(w, 600); Capture(w, "register"); w.Close(); return Task.CompletedTask; };
         s["reset-password"] = () => { var w = Offscreen(new ResetPasswordWindow()); Settle(w, 600); Capture(w, "reset-password"); w.Close(); return Task.CompletedTask; };
         s["home"] = () => Page("home", () => { Navigator.ToHome(); return Task.CompletedTask; }, 2200);
@@ -163,7 +182,7 @@ internal static partial class Program
         var api = AppServices.Api;
         await api.ConnectAsync();
         AppServices.SetCurrentUser(await api.LoginAsync("alice", "Ab123456"));
-        _main = Offscreen(new MainWindow(), 1200, 800);
+        _main = Offscreen(new MainWindow(), _mainW, _mainH);
         Settle(_main, 800);
     }
 

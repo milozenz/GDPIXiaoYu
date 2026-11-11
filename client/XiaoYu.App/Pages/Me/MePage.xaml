@@ -153,14 +153,14 @@
                 <TextBlock Style="{StaticResource ErrorText}" Text="{Binding ErrorMessage}" Margin="8,0,0,12" Visibility="{Binding IsEditing, Converter={StaticResource InvBoolToVis}}" />
                 <StackPanel Visibility="{Binding ShowMine, Converter={StaticResource BoolToVis}}">
                     <ItemsControl ItemsSource="{Binding MyGoods}">
-                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><c:CardGrid /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate><DataTemplate><c:GoodsCard /></DataTemplate></ItemsControl.ItemTemplate>
                     </ItemsControl>
                     <c:EmptyState Glyph="{StaticResource IconCamera}" Text="还没发布过闲置" Visibility="{Binding MineEmpty, Converter={StaticResource BoolToVis}}" />
                 </StackPanel>
                 <StackPanel Visibility="{Binding ShowFavorites, Converter={StaticResource BoolToVis}}">
                     <ItemsControl ItemsSource="{Binding Favorites}">
-                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><c:CardGrid /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate><DataTemplate><c:GoodsCard /></DataTemplate></ItemsControl.ItemTemplate>
                     </ItemsControl>
                     <c:EmptyState Glyph="{StaticResource IconHeartOutline}" Text="还没有收藏" Visibility="{Binding FavoritesEmpty, Converter={StaticResource BoolToVis}}" />

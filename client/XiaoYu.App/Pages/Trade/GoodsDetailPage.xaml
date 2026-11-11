@@ -37,15 +37,17 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid MaxWidth="1060" Margin="32,26,32,40" HorizontalAlignment="Stretch" Visibility="{Binding Loaded, Converter={StaticResource BoolToVis}}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="540" />
+                <!-- 宽窗口下左边图片 540、右边 480；窗口变窄时两栏按 9:8 一起缩小，右栏至少 300，不会被截断 -->
+                <ColumnDefinition Width="9*" MaxWidth="540" />
                 <ColumnDefinition Width="40" />
-                <ColumnDefinition Width="*" MinWidth="320" />
+                <ColumnDefinition Width="8*" MinWidth="300" />
             </Grid.ColumnDefinitions>
 
             <!-- 左：图片 -->
             <StackPanel Grid.Column="0" VerticalAlignment="Top">
-                <Grid Width="540" Height="540" Background="#F0F0EC">
-                    <Grid.Clip><RectangleGeometry Rect="0,0,540,540" RadiusX="26" RadiusY="26" /></Grid.Clip>
+                <!-- 大图保持正方形，边长跟着左栏宽度变（代码里 OnMainImageSizeChanged） -->
+                <Grid x:Name="MainImageBox" Height="540" Background="#F0F0EC" SizeChanged="OnMainImageSizeChanged">
+                    <Grid.Clip><RectangleGeometry x:Name="MainImageClip" Rect="0,0,540,540" RadiusX="26" RadiusY="26" /></Grid.Clip>
                     <Image s:RemoteImage.Source="{Binding MainImage}" Stretch="UniformToFill" />
                     <Border Background="#99000000" Visibility="{Binding IsOnSale, Converter={StaticResource InvBoolToVis}}">
                         <TextBlock Text="{Binding Detail.Status, Converter={StaticResource GoodsStatusText}}" Foreground="White" FontSize="34" FontWeight="Bold"
@@ -177,7 +179,7 @@
                         </StackPanel>
                     </Button>
                     <Button Style="{StaticResource DangerButton}" Height="50" Padding="26,0" Content="下架" Command="{Binding OffShelfCommand}" Visibility="{Binding IsOnSale, Converter={StaticResource BoolToVis}}" />
-                    <Button Style="{StaticResource PrimaryButton}" Height="50" Padding="26,0" Content="重新上架" Command="{Binding OnShelfCommand}" Visibility="{Binding IsOffShelf, Converter={StaticResource BoolToVis}}" />
+                    <Button Style="{StaticResource PrimaryButton}" Height="50" Padding="26,0" Content="重新上架" Command="{Binding ReShelfCommand}" Visibility="{Binding IsOffShelf, Converter={StaticResource BoolToVis}}" />
                 </StackPanel>
             </StackPanel>
         </Grid>

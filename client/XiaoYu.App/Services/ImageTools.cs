@@ -14,6 +14,7 @@ public static class ImageTools
     /// <summary>弹出选择图片的窗口，可以多选。取消返回空数组。</summary>
     public static string[] PickImages(bool multiple = true)
     {
+        if (PickHook != null) return PickHook(multiple);
         var dialog = new OpenFileDialog
         {
             Title = "选择图片",
@@ -22,6 +23,9 @@ public static class ImageTools
         };
         return dialog.ShowDialog() == true ? dialog.FileNames : Array.Empty<string>();
     }
+
+    /// <summary>测试用：设置后不弹出选择图片的窗口，直接用它返回的文件。正常运行时为 null。</summary>
+    public static Func<bool, string[]>? PickHook { get; set; }
 
     /// <summary>
     /// 读一张本地图片，缩小到长边 1280 像素以内，转成 JPG。手机拍的照片动辄几 MB，压缩后一般只有一两百 KB。
