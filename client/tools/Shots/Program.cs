@@ -89,6 +89,7 @@ internal static partial class Program
         var s = new Dictionary<string, Func<Task>>();
         if (_real) AddFlows(s);                       // 流程测试只在连真服务器时有意义
         AddCrawl(s);                                  // 点点点测试（只用假数据）
+        if (_real) AddRecord(s);                      // 录演示视频（连真服务器）
         s["icons"] = () => { ShotIcons(); return Task.CompletedTask; };
         s["login"] = () => { var w = Offscreen(new LoginWindow()); Settle(w, 600); Capture(w, "login"); w.Close(); return Task.CompletedTask; };
         // 密码小眼睛：先填好密码截一张（圆点），再按下眼睛截一张（明文）
